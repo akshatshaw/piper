@@ -536,6 +536,28 @@ void textToAudio(PiperConfig &config, Voice &voice, std::string text,
           std::make_shared<std::vector<Phoneme>>(sentencePhonemes));
     }
 
+         
+// edited code
+
+        // Handle punctuation and filler words
+        if (currentPhoneme == ',' || currentPhoneme == '!' || 
+            currentPhoneme == 'um' || currentPhoneme == 'uh') {
+          phraseSilenceSamples.push_back(
+              (std::size_t)(voice.synthesisConfig.sentenceSilenceSeconds *
+                            voice.synthesisConfig.sampleRate *
+                            voice.synthesisConfig.channels));
+
+          currentPhrasePhonemes = std::make_shared<std::vector<Phoneme>>();
+          phrasePhonemes.push_back(currentPhrasePhonemes);
+        }
+      }
+    } else {
+      // Use all phonemes
+      phrasePhonemes.push_back(
+          std::make_shared<std::vector<Phoneme>>(sentencePhonemes));
+    }
+
+
     // Ensure results/samples are the same size
     while (phraseResults.size() < phrasePhonemes.size()) {
       phraseResults.emplace_back();
